@@ -6,13 +6,12 @@ import android.content.res.AssetManager;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.util.Log;
+import android.widget.SeekBar;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-//some comment
 
 public class BeatBox {
     private static final String TAG = "BeatBox";
@@ -21,6 +20,8 @@ public class BeatBox {
     private AssetManager mAssets;
     private List<Sound> mSounds = new ArrayList<> ();
     private SoundPool mSoundPool;
+    private int lastPlayedSoundPos;
+    private SeekBar mRateBar;
 
     public BeatBox(Context context) {
         mAssets = context.getAssets ();
@@ -51,13 +52,22 @@ public class BeatBox {
         }
     }
 
-    void play(Sound sound){
-        Integer soundId = sound.getSoundId();
+    void play(Sound sound) {
+        Integer soundId = sound.getSoundId ();
         if (soundId == null) {
             return;
+        }else {
+            lastPlayedSoundPos = sound.getPosInRecyclerViewList ();
         }
-        mSoundPool.play(soundId, 1.0f, 1.0f, 1, 0, 1.0f);
-        Log.i (TAG,"sound "+sound.getName ()+" played");
+
+        mSoundPool.play (soundId,
+                1.0f,
+                1.0f,
+                1,
+                0,
+                sound.getRate ());
+
+        Log.i (TAG, "sound " + sound.getName () + " played");
     }
 
     private void loadSound(Sound sound) throws IOException {
@@ -72,5 +82,17 @@ public class BeatBox {
 
     public void release() {
         mSoundPool.release ();
+    }
+
+    public int getLastPlayedSoundPos() {
+        return lastPlayedSoundPos;
+    }
+
+    void updateRateBar(int rate) {
+        mRateBar.setProgress (rate);
+    }
+
+    public void setRateBarController(SeekBar rateBar) {
+        mRateBar = rateBar;
     }
 }

@@ -1,10 +1,10 @@
 package com.kshv.example.beatbox.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -43,18 +43,39 @@ public class BeatBoxFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        FragmentBeatBoxBinding binding = DataBindingUtil.inflate (inflater,
+        final FragmentBeatBoxBinding binding = DataBindingUtil.inflate (inflater,
                 R.layout.fragment_beat_box, container, false);
-
         binding.recyclerView.setLayoutManager (new GridLayoutManager (getActivity (), 3));
         binding.recyclerView.setAdapter (new SoundAdapter (mBeatBox.getSounds ()));
+        binding.rateBar.setMax (100);
+        binding.rateBar.setOnSeekBarChangeListener (new SeekBar.OnSeekBarChangeListener () {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                binding.barDigits.setText ("Rate: " + (float) (seekBar.getProgress ()) / 100);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                float newRate = (float) (seekBar.getProgress ()) / 100;
+                mBeatBox.getSounds ().get (mBeatBox.getLastPlayedSoundPos ())
+                        .setRate (newRate);
+                binding.barDigits.setText ("Rate: " + newRate);
+            }
+        });
+        mBeatBox.setRateBarController (binding.rateBar);
+
         return binding.getRoot ();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy ();
-        mBeatBox.release();
+        mBeatBox.release ();
     }
 
     private class SoundHolder extends RecyclerView.ViewHolder {
@@ -67,7 +88,7 @@ public class BeatBoxFragment extends Fragment {
             mBinding.setViewModel (new SoundViewModel (mBeatBox));
         }
 
-        void bind(Sound sound){
+        void bind(Sound sound) {
             mBinding.getViewModel ().setSound (sound);
             mBinding.executePendingBindings ();
         }
@@ -76,7 +97,7 @@ public class BeatBoxFragment extends Fragment {
     private class SoundAdapter extends RecyclerView.Adapter<SoundHolder> {
         private List<Sound> mSounds;
 
-        SoundAdapter(List<Sound> sounds){
+        SoundAdapter(List<Sound> sounds) {
             mSounds = sounds;
         }
 
@@ -92,6 +113,7 @@ public class BeatBoxFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull SoundHolder holder, int position) {
             Sound sound = mSounds.get (position);
+            sound.setPositionInRecyclerViewList (position);
             holder.bind (sound);
         }
 

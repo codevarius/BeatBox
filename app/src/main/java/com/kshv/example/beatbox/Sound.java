@@ -3,27 +3,45 @@ package com.kshv.example.beatbox;
 public class Sound {
     private String mAssetPath, mName;
     private Integer mSoundId;
+    private float rate = 1;
+    private int mPosInRecyclerViewList;
 
-    public Sound(String assetPath){
+    Sound(String assetPath){
         mAssetPath = assetPath;
         String[] components = assetPath.split ("/");
         String filename = components[components.length - 1];
         mName = filename.replace (".wav","");
     }
 
-    public String getAssetPath() {
+    String getAssetPath() {
         return mAssetPath;
     }
 
-    public String getName() {
+    String getName() {
         return mName;
     }
 
-    public Integer getSoundId() {
+    float getRate() {
+        return rate;
+    }
+
+    public void setRate(float rate) {
+        this.rate = rate;
+    }
+
+    Integer getSoundId() {
         return mSoundId;
     }
 
-    public void setSoundId(Integer mSoundId) {
+    void setSoundId(Integer mSoundId) {
         this.mSoundId = mSoundId;
+    }
+
+    public void setPositionInRecyclerViewList(int position) {
+        mPosInRecyclerViewList = position;
+    }
+
+    int getPosInRecyclerViewList() {
+        return mPosInRecyclerViewList;
     }
 }

@@ -26,6 +26,7 @@ public class SoundViewModel extends BaseObservable {
     }
 
     public void onButtonClicked() {
+        mBeatBox.updateRateBar((int)(mSound.getRate () * 100));
         mBeatBox.play (mSound);
     }
 }
