@@ -21,6 +21,7 @@ import com.kshv.example.beatbox.databinding.FragmentBeatBoxBinding;
 import com.kshv.example.beatbox.databinding.ListItemSoundBinding;
 
 import java.util.List;
+import java.util.Objects;
 
 public class BeatBoxFragment extends Fragment {
 
@@ -34,7 +35,8 @@ public class BeatBoxFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate (savedInstanceState);
-        mBeatBox = new BeatBox (getContext ());
+        setRetainInstance(true);
+        mBeatBox = new BeatBox (Objects.requireNonNull(getContext()));
     }
 
     @Nullable
@@ -47,6 +49,12 @@ public class BeatBoxFragment extends Fragment {
         binding.recyclerView.setLayoutManager (new GridLayoutManager (getActivity (), 3));
         binding.recyclerView.setAdapter (new SoundAdapter (mBeatBox.getSounds ()));
         return binding.getRoot ();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mBeatBox.release();
     }
 
     private class SoundHolder extends RecyclerView.ViewHolder {
