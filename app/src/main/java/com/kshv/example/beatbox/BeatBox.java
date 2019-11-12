@@ -10,11 +10,12 @@ import android.util.Log;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class BeatBox {
-    public static final String TAG = "BeatBox";
-    public static final String SOUND_FOLDER = "sample_sounds";
-    public static final int MAX_SOUNDS = 5;
+    private static final String TAG = "BeatBox";
+    private static final String SOUND_FOLDER = "sample_sounds";
+    private static final int MAX_SOUNDS = 5;
     private AssetManager mAssets;
     private List<Sound> mSounds = new ArrayList<> ();
     private SoundPool mSoundPool;
@@ -25,17 +26,17 @@ public class BeatBox {
         loadSounds ();
     }
 
-    void loadSounds() {
+    private void loadSounds() {
         String[] soundNames;
         try {
             soundNames = mAssets.list (SOUND_FOLDER);
-            Log.i (TAG, "Found " + soundNames.length + " sounds");
+            Log.i (TAG, "Found " + (soundNames != null ? soundNames.length : 0) + " sounds");
         } catch (IOException e) {
             soundNames = new String[0];
             Log.e (TAG, "Could not list assets " + e);
         }
 
-        for (String filename : soundNames) {
+        for (String filename : Objects.requireNonNull (soundNames)) {
             try {
                 String assetPath = SOUND_FOLDER + "/" + filename;
                 Sound sound = new Sound (assetPath);
@@ -48,7 +49,7 @@ public class BeatBox {
         }
     }
 
-    public void play(Sound sound){
+    void play(Sound sound){
         Integer soundId = sound.getSoundId();
         if (soundId == null) {
             return;
@@ -65,5 +66,9 @@ public class BeatBox {
 
     public List<Sound> getSounds() {
         return mSounds;
+    }
+
+    public void release() {
+        mSoundPool.release ();
     }
 }
