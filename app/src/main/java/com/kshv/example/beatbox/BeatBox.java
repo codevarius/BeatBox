@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+//some comment
+
 public class BeatBox {
     private static final String TAG = "BeatBox";
     private static final String SOUND_FOLDER = "sample_sounds";
