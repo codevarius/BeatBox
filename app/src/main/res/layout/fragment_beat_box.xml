@@ -22,7 +22,7 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <EditText
+            <TextView
                 android:id="@+id/barDigits"
                 android:layout_weight="1"
                 android:layout_width="match_parent"
@@ -33,7 +33,7 @@
             <SeekBar
                 android:id="@+id/rateBar"
                 android:layout_weight="1"
-                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                style="@style/Widget.AppCompat.SeekBar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
